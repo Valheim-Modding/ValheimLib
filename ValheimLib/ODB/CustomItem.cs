@@ -1,18 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
-namespace ValheimLib.ObjectDBLib
+namespace ValheimLib.ODB
 {
     public class CustomItem
     {
         public GameObject ItemPrefab;
         public ItemDrop ItemDrop;
+        public bool FixReference;
 
-        public CustomItem(GameObject itemPrefab)
+        public CustomItem(GameObject itemPrefab, bool fixReference)
         {
             ItemPrefab = itemPrefab;
-
             ItemDrop = itemPrefab.GetComponent<ItemDrop>();
+
+            FixReference = fixReference;
         }
 
         public bool IsValid()

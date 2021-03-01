@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using ValheimLib.Util;
+using ValheimLib.Util.Reflection;
 
 namespace ValheimLib
 {
@@ -20,8 +21,8 @@ namespace ValheimLib
         public static void Init()
         {
             var _ = new Hook(
-                typeof(Localization).GetMethod(nameof(Localization.SetupLanguage), HookHelper.AllBindingFlags),
-                typeof(Language).GetMethod(nameof(AddTokens), HookHelper.AllBindingFlags));
+                typeof(Localization).GetMethod(nameof(Localization.SetupLanguage), ReflectionHelper.AllBindingFlags),
+                typeof(Language).GetMethod(nameof(AddTokens), ReflectionHelper.AllBindingFlags));
         }
 
         // Todo : for now the custom tokens are getting to any language

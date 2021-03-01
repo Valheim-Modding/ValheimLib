@@ -44,13 +44,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ObjectDBLib\CustomRecipe.cs" />
-    <Compile Include="ObjectDBLib\CustomRequirement.cs" />
+    <Compile Include="ODB\CustomStatusEffect.cs" />
+    <Compile Include="ODB\CustomRecipe.cs" />
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
-    <Compile Include="ObjectDBLib\CustomItem.cs" />
-    <Compile Include="Util\HookHelper.cs" />
+    <Compile Include="ODB\CustomItem.cs" />
+    <Compile Include="Util\Reflection\ReflectionHelper.cs" />
     <Compile Include="Language.cs" />
-    <Compile Include="ObjectDBLib\ObjectDBHelper.cs" />
+    <Compile Include="ODB\ObjectDBHelper.cs" />
     <Compile Include="Prefab.cs" />
     <Compile Include="ValheimLib.cs" />
     <Compile Include="Log.cs" />

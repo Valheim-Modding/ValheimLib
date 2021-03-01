@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using ValheimLib.ObjectDBLib;
 
 namespace ValheimLib
 {
@@ -8,7 +7,7 @@ namespace ValheimLib
     {
         public const string ModGuid = "ValheimModdingTeam." + ModName;
         public const string ModName = "ValheimLib";
-        public const string ModVer = "0.0.1";
+        public const string ModVer = "0.0.2";
 
         internal static ValheimLib Instance { get; private set; }
 
@@ -17,7 +16,7 @@ namespace ValheimLib
             Log.Init(Logger);
 
             Language.Init();
-            ObjectDBHelper.Init();
+            ODB.ObjectDBHelper.Init();
 
             Instance = this;
         }

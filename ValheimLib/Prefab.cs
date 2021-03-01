@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
+using ValheimLib.Util.Reflection;
 using UnityObject = UnityEngine.Object;
 
 namespace ValheimLib
@@ -6,6 +11,7 @@ namespace ValheimLib
     public static class Prefab
     {
         public const string ModdedPrefabsParentName = "ModdedPrefabs";
+        public const string MockPrefix = "VLmock_";
 
         private static GameObject _parent;
         public static GameObject Parent
@@ -31,34 +37,140 @@ namespace ValheimLib
             return prefab;
         }
 
-        public static class Cache
+        public static UnityObject GetRealPrefabFromMock(UnityObject unityObject, Type mockObjectType)
         {
-            private static CraftingStation[] _craftingStations = new CraftingStation[0];
-            public static CraftingStation[] CraftingStations
+            if (unityObject)
             {
-                get
+                var unityObjectName = unityObject.name;
+                var isMock = unityObjectName.StartsWith(MockPrefix);
+                if (isMock)
                 {
-                    if (_craftingStations.Length == 0)
-                    {
-                        _craftingStations = Resources.FindObjectsOfTypeAll<CraftingStation>();
-                    }
-
-                    return _craftingStations;
+                    unityObjectName = unityObjectName.Substring(MockPrefix.Length);
+                    return Cache.GetPrefab(mockObjectType, unityObjectName);
                 }
             }
 
-            private static Projectile[] _projectiles = new Projectile[0];
-            public static Projectile[] Projectiles
+            return null;
+        }
+
+        public static T GetRealPrefabFromMock<T>(UnityObject unityObject) where T : UnityObject
+        {
+            return (T)GetRealPrefabFromMock(unityObject, typeof(T));
+        }
+
+        // Thanks for not using the Resources folder IronGate
+        // There is probably some oddities in there
+        public static void FixReferences(this object objectToFix)
+        {
+            var type = objectToFix.GetType();
+
+            const BindingFlags flags = ReflectionHelper.AllBindingFlags & ~BindingFlags.Static;
+            var fields = type.GetFields(flags);
+
+            foreach (var field in fields)
             {
-                get
+                var fieldType = field.FieldType;
+
+                var isUnityObject = fieldType.IsSameOrSubclass(typeof(UnityObject));
+                if (isUnityObject)
                 {
-                    if (_projectiles.Length == 0)
+                    var mock = (UnityObject)field.GetValue(objectToFix);
+                    var realPrefab = GetRealPrefabFromMock(mock, field.FieldType);
+                    if (realPrefab)
                     {
-                        _projectiles = Resources.FindObjectsOfTypeAll<Projectile>();
+                        field.SetValue(objectToFix, realPrefab);
+                    }
+                }
+                else
+                {
+                    var enumeratedType = fieldType.GetEnumeratedType();
+                    var isEnumerableOfUnityObjects = enumeratedType?.IsSameOrSubclass(typeof(UnityObject)) == true;
+                    if (isEnumerableOfUnityObjects)
+                    {
+                        var currentValues = (IEnumerable<UnityObject>)field.GetValue(objectToFix);
+                        var isArray = fieldType.IsArray;
+                        var newI = isArray ? (IEnumerable<UnityObject>)Array.CreateInstance(enumeratedType, currentValues.Count()) : (IEnumerable<UnityObject>)Activator.CreateInstance(fieldType);
+                        var list = new List<UnityObject>();
+                        foreach (var unityObject in currentValues)
+                        {
+                            var realPrefab = GetRealPrefabFromMock(unityObject, enumeratedType);
+                            if (realPrefab)
+                            {
+                                list.Add(realPrefab);
+                            }
+                        }
+
+                        if (list.Count > 0)
+                        {
+                            if (isArray)
+                            {
+                                var toArray = ReflectionHelper.Cache.EnumerableToArray;
+                                var toArrayT = toArray.MakeGenericMethod(enumeratedType);
+
+                                // mono...
+                                var cast = ReflectionHelper.Cache.EnumerableCast;
+                                var castT = cast.MakeGenericMethod(enumeratedType);
+                                var correctTypeList = castT.Invoke(null, new object[] { list });
+
+                                var array = toArrayT.Invoke(null, new object[] { correctTypeList });
+                                field.SetValue(objectToFix, array);
+                            }
+                            else
+                            {
+                                field.SetValue(objectToFix, newI.Concat(list));
+                            }
+                        }
+                    }
+                    else if (fieldType.IsClass)
+                    {
+                        field.GetValue(objectToFix)?.FixReferences();
+                    }
+                }
+            }
+        }
+
+        public static class Cache
+        {
+            private static readonly Dictionary<Type, Dictionary<string, UnityObject>> DictionaryCache =
+                new Dictionary<Type, Dictionary<string, UnityObject>>();
+
+            public static UnityObject GetPrefab(Type type, string name)
+            {
+                void InitCache(Dictionary<string, UnityObject> map = null)
+                {
+                    map ??= new Dictionary<string, UnityObject>();
+                    foreach (var unityObject in Resources.FindObjectsOfTypeAll(type))
+                    {
+                        map[unityObject.name] = unityObject;
                     }
 
-                    return _projectiles;
+                    DictionaryCache[type] = map;
                 }
+
+                if (DictionaryCache.TryGetValue(type, out var map))
+                {
+                    if (map.Count == 0)
+                    {
+                        InitCache(map);
+                    }
+
+                    if (map.TryGetValue(name, out var unityObject))
+                    {
+                        return unityObject;
+                    }
+                }
+                else
+                {
+                    InitCache();
+                    return GetPrefab(type, name);
+                }
+
+                return null;
+            }
+
+            public static T GetPrefab<T>(string name) where T : UnityObject
+            {
+                return (T)GetPrefab(typeof(T), name);
             }
         }
     }
