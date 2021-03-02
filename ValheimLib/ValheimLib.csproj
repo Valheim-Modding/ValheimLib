@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="ODB\CustomStatusEffect.cs" />
     <Compile Include="ODB\CustomRecipe.cs" />
+    <Compile Include="ODB\SaveCustomData.cs" />
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
     <Compile Include="ODB\CustomItem.cs" />
     <Compile Include="Util\Reflection\ReflectionHelper.cs" />
