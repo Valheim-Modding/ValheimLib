@@ -134,24 +134,24 @@ namespace ValheimLib
             private static readonly Dictionary<Type, Dictionary<string, UnityObject>> DictionaryCache =
                 new Dictionary<Type, Dictionary<string, UnityObject>>();
 
-            public static UnityObject GetPrefab(Type type, string name)
+            private static void InitCache(Type type, Dictionary<string, UnityObject> map = null)
             {
-                void InitCache(Dictionary<string, UnityObject> map = null)
+                map ??= new Dictionary<string, UnityObject>();
+                foreach (var unityObject in Resources.FindObjectsOfTypeAll(type))
                 {
-                    map ??= new Dictionary<string, UnityObject>();
-                    foreach (var unityObject in Resources.FindObjectsOfTypeAll(type))
-                    {
-                        map[unityObject.name] = unityObject;
-                    }
-
-                    DictionaryCache[type] = map;
+                    map[unityObject.name] = unityObject;
                 }
 
+                DictionaryCache[type] = map;
+            }
+
+            public static UnityObject GetPrefab(Type type, string name)
+            {
                 if (DictionaryCache.TryGetValue(type, out var map))
                 {
                     if (map.Count == 0)
                     {
-                        InitCache(map);
+                        InitCache(type, map);
                     }
 
                     if (map.TryGetValue(name, out var unityObject))
@@ -161,7 +161,7 @@ namespace ValheimLib
                 }
                 else
                 {
-                    InitCache();
+                    InitCache(type);
                     return GetPrefab(type, name);
                 }
 
@@ -171,6 +171,24 @@ namespace ValheimLib
             public static T GetPrefab<T>(string name) where T : UnityObject
             {
                 return (T)GetPrefab(typeof(T), name);
+            }
+
+            public static Dictionary<string, UnityObject> GetPrefabs(Type type)
+            {
+                if (DictionaryCache.TryGetValue(type, out var map))
+                {
+                    if (map.Count == 0)
+                    {
+                        InitCache(type, map);
+                    }
+
+                    return map;
+                }
+                else
+                {
+                    InitCache(type);
+                    return GetPrefabs(type);
+                }
             }
         }
     }
