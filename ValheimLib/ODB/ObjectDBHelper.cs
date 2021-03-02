@@ -5,9 +5,9 @@ namespace ValheimLib.ODB
 {
     public static class ObjectDBHelper
     {
-        private static readonly List<CustomItem> CustomItems = new List<CustomItem>();
-        private static readonly List<CustomRecipe> CustomRecipes = new List<CustomRecipe>();
-        private static readonly List<CustomStatusEffect> CustomStatusEffects = new List<CustomStatusEffect>();
+        internal static readonly List<CustomItem> CustomItems = new List<CustomItem>();
+        internal static readonly List<CustomRecipe> CustomRecipes = new List<CustomRecipe>();
+        internal static readonly List<CustomStatusEffect> CustomStatusEffects = new List<CustomStatusEffect>();
 
         /// <summary>
         /// Event that get fired after the ObjectDB get init and filled with custom items.
@@ -18,6 +18,8 @@ namespace ValheimLib.ODB
         public static void Init()
         {
             On.ObjectDB.Awake += AddCustomData;
+
+            SaveCustomData.Init();
 
             ItemDropMockFix.Switch(true);
         }
