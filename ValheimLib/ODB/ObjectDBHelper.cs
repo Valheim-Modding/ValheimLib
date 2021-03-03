@@ -62,6 +62,7 @@ namespace ValheimLib.ODB
                 var itemDrop = customItem.ItemDrop;
                 if (customItem.FixReference)
                 {
+                    itemDrop.m_itemData.m_dropPrefab = customItem.ItemPrefab;
                     itemDrop.m_itemData.m_shared.FixReferences();
                     customItem.FixReference = false;
                 }
