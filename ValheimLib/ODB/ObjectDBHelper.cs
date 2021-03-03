@@ -18,6 +18,7 @@ namespace ValheimLib.ODB
         public static void Init()
         {
             On.ObjectDB.Awake += AddCustomData;
+            On.ZNetScene.Awake += AddCustomPrefabsToZNetSceneDictionary;
 
             SaveCustomData.Init();
 
@@ -132,6 +133,16 @@ namespace ValheimLib.ODB
 
                 OnAfterInit?.Invoke();
                 OnAfterInit = null;
+            }
+        }
+
+        private static void AddCustomPrefabsToZNetSceneDictionary(On.ZNetScene.orig_Awake orig, ZNetScene self)
+        {
+            orig(self);
+
+            foreach (var customItem in CustomItems)
+            {
+                self.m_namedPrefabs.Add(customItem.ItemPrefab.name.GetStableHashCode(), customItem.ItemPrefab);
             }
         }
     }
