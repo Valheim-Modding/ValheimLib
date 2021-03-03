@@ -15,6 +15,6 @@ namespace ValheimLib.Util
             }
         }
 
-        public static string CustomDataFolder => Path.Combine(ValheimLibFolder, "CustomData");
+        public static string CustomItemDataFolder => Path.Combine(ValheimLibFolder, "CustomItemData");
     }
 }
