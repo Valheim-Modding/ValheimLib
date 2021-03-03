@@ -49,6 +49,7 @@
     <Compile Include="ODB\SaveCustomData.cs" />
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
     <Compile Include="ODB\CustomItem.cs" />
+    <Compile Include="Util\Paths.cs" />
     <Compile Include="Util\Reflection\ReflectionHelper.cs" />
     <Compile Include="Language.cs" />
     <Compile Include="ODB\ObjectDBHelper.cs" />
