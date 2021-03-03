@@ -149,7 +149,7 @@ namespace ValheimLib
             {
                 if (DictionaryCache.TryGetValue(type, out var map))
                 {
-                    if (map.Count == 0)
+                    if (map.Count == 0 || !map.Values.First())
                     {
                         InitCache(type, map);
                     }
@@ -177,7 +177,7 @@ namespace ValheimLib
             {
                 if (DictionaryCache.TryGetValue(type, out var map))
                 {
-                    if (map.Count == 0)
+                    if (map.Count == 0 || !map.Values.First())
                     {
                         InitCache(type, map);
                     }
