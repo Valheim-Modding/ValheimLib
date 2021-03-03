@@ -54,6 +54,7 @@
     <Compile Include="Language.cs" />
     <Compile Include="ODB\ObjectDBHelper.cs" />
     <Compile Include="Prefab.cs" />
+    <Compile Include="Util\Hashes\Hashes.cs" />
     <Compile Include="ValheimLib.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
