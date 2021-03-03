@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using ValheimLib.Util.Reflection;
 using UnityObject = UnityEngine.Object;
@@ -133,6 +134,8 @@ namespace ValheimLib
         {
             private static readonly Dictionary<Type, Dictionary<string, UnityObject>> DictionaryCache =
                 new Dictionary<Type, Dictionary<string, UnityObject>>();
+
+            internal static ConditionalWeakTable<Inventory, Container> InventoryToContainer = new ConditionalWeakTable<Inventory, Container>();
 
             private static void InitCache(Type type, Dictionary<string, UnityObject> map = null)
             {
