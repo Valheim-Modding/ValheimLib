@@ -14,7 +14,7 @@ The contents of `ValheimLib` should be extracted into the `BepInEx` folder, such
 
 ## Developing
 
-Documentation will be included in the  *xmldocs*, and further information may be on the dedicated [ValheimModding wiki](https://github.com/Valheim-Modding/Wiki). Do not hestiate to ask in [the modding discord](https://discord.gg/RBq2mzeu4z) too!
+Documentation will be included in the  *xmldocs*, and further information may be on the dedicated [ValheimModding wiki](https://github.com/Valheim-Modding/Wiki). Do not hesitate to ask in [the modding discord](https://discord.gg/RBq2mzeu4z) too!
 
 ## Changelog
 
