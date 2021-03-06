@@ -48,15 +48,25 @@ namespace ValheimLib.ODB
 
         public static bool IsValid(this ItemDrop self)
         {
-            var tokenName = self.TokenName();
-
-            if (tokenName[0] == Language.TokenFirstChar)
+            try
             {
+                var tokenName = self.TokenName();
+                if (tokenName[0] != Language.TokenFirstChar)
+                {
+                    throw new Exception($"Item name first char should be $ for token lookup ! (current item name : {tokenName})");
+                }
+
+                var hasIcon = self.m_itemData.m_shared.m_icons.Length > 0;
+                if (!hasIcon)
+                {
+                    throw new Exception($"ItemDrop should have atleast one icon !");
+                }
+
                 return true;
             }
-            else
+            catch (Exception e)
             {
-                throw new Exception($"Item name first char should be $ ! (item name : {tokenName})");
+                throw new Exception($"ItemDrop should have a token : m_itemData.m_shared.m_name \n and atleast one icon. See the exception for more info : {e}");
             }
         }
     }
