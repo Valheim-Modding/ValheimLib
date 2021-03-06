@@ -67,6 +67,8 @@ namespace ValheimLib.ODB
             catch (Exception e)
             {
                 Log.LogError(e);
+
+                return false;
             }
         }
     }
