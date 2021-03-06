@@ -66,7 +66,7 @@ namespace ValheimLib.ODB
             }
             catch (Exception e)
             {
-                throw new Exception($"ItemDrop should have a token : m_itemData.m_shared.m_name \n and atleast one icon. See the exception for more info : {e}");
+                Log.LogError(e);
             }
         }
     }
