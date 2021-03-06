@@ -17,12 +17,30 @@ namespace ValheimLib.ODB
         }
     }
 
+    public static class MockCraftingStation
+    {
+        public static CraftingStation Create(string name)
+        {
+            var g = new GameObject(name + "_" + nameof(MockCraftingStation));
+            UnityObject.DontDestroyOnLoad(g);
+            g.transform.SetParent(Prefab.Parent.transform);
+            g.SetActive(false);
+
+            var craftingStation = g.AddComponent<CraftingStation>();
+            craftingStation.name = Prefab.MockPrefix + name;
+
+            return craftingStation;
+        }
+    }
+
     public static class MockItemDrop
     {
         public static ItemDrop Create(string name)
         {
-            var g = new GameObject();
+            var g = new GameObject(name + "_" + nameof(MockItemDrop));
             UnityObject.DontDestroyOnLoad(g);
+            g.transform.SetParent(Prefab.Parent.transform);
+            g.SetActive(false);
 
             var itemDrop = g.AddComponent<ItemDrop>();
             itemDrop.name = Prefab.MockPrefix + name;
