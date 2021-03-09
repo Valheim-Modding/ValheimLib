@@ -157,21 +157,27 @@ namespace ValheimLib.ODB
             {
                 if (!_enabled)
                 {
-                    On.ItemDrop.Awake += Hook;
+                    On.ItemDrop.Awake += SilenceErrors;
                     _enabled = enable;
                 }
             }
             else
             {
-                On.ItemDrop.Awake -= Hook;
+                On.ItemDrop.Awake -= SilenceErrors;
                 _enabled = enable;
             }
         }
 
-        private static void Hook(On.ItemDrop.orig_Awake orig, ItemDrop self)
+        private static void SilenceErrors(On.ItemDrop.orig_Awake orig, ItemDrop self)
         {
-            self.m_myIndex = ItemDrop.m_instances.Count;
-            ItemDrop.m_instances.Add(self);
+            try
+            {
+                orig(self);
+            }
+            catch(Exception)
+            {
+
+            }
         }
     }
 }
