@@ -30,10 +30,24 @@ namespace ValheimLib
             }
         }
 
-        public static GameObject InstantiateClone(this GameObject gameObject, string nameToSet)
+        public static GameObject InstantiateClone(this GameObject gameObject, string nameToSet, bool zNetRegister = true)
         {
+            const char separator = '_';
+
+            var methodBase = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod();
+            var id = methodBase.DeclaringType.Assembly.GetName().Name + separator + methodBase.DeclaringType.Name + separator + methodBase.Name;
+
             var prefab = UnityObject.Instantiate(gameObject, Parent.transform);
-            prefab.name = nameToSet;
+            prefab.name = nameToSet + separator + id;
+
+            if (zNetRegister)
+            {
+                var zNetScene = ZNetScene.instance;
+                if (zNetScene)
+                {
+                    zNetScene.m_namedPrefabs.Add(prefab.name.GetStableHashCode(), prefab);
+                }
+            }
 
             return prefab;
         }
