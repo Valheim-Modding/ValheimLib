@@ -7,7 +7,7 @@ namespace ValheimLib
     {
         public const string ModGuid = "ValheimModdingTeam." + ModName;
         public const string ModName = "ValheimLib";
-        public const string ModVer = "0.0.5";
+        public const string ModVer = "0.0.6";
 
         internal static ValheimLib Instance { get; private set; }
 
