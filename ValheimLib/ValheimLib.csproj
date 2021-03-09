@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mock.cs" />
     <Compile Include="ODB\CustomStatusEffect.cs" />
     <Compile Include="ODB\CustomRecipe.cs" />
     <Compile Include="ODB\SaveCustomData.cs" />
