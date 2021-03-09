@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +19,21 @@ namespace ValheimLib.Util.Reflection
         public static bool IsEnumerable(this Type self)
         {
             return typeof(IEnumerable).IsAssignableFrom(self) && self != typeof(string);
+        }
+
+        public static PluginInfo GetPluginInfoFromType(Type type)
+        {
+            var callerAss = type.Assembly;
+            foreach (var p in BepInEx.Bootstrap.Chainloader.PluginInfos)
+            {
+                var pluginAssembly = p.Value.Instance.GetType().Assembly;
+                if (pluginAssembly == callerAss)
+                {
+                    return p.Value;
+                }
+            }
+
+            return null;
         }
 
         // https://stackoverflow.com/a/21995826
