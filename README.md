@@ -18,6 +18,10 @@ Documentation will be included in the  *xmldocs*, and further information may be
 
 ## Changelog
 
+**0.0.6**
+
+* Fix bug where player would appear without any items in title screen.
+
 **0.0.5**
 
 * Add Mock for CraftingStation. Better error handling for ItemDrop.IsValid
