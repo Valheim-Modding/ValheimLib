@@ -136,6 +136,14 @@ namespace ValheimLib
                             }
                         }
                     }
+                    else if (enumeratedType?.IsClass == true)
+                    {
+                        var currentValues = (IEnumerable<object>)field.GetValue(objectToFix);
+                        foreach (var value in currentValues)
+                        {
+                            value.FixReferences();
+                        }
+                    }
                     else if (fieldType.IsClass)
                     {
                         field.GetValue(objectToFix)?.FixReferences();
