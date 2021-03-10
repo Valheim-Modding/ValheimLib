@@ -14,13 +14,19 @@ The contents of `ValheimLib` should be extracted into the `BepInEx` folder, such
 
 ## Developing
 
-Documentation will be included in the  *xmldocs*, and further information may be on the dedicated [ValheimModding wiki](https://github.com/Valheim-Modding/Wiki). Do not hesitate to ask in [the modding discord](https://discord.gg/RBq2mzeu4z) too!
+Documentation will be included in the  *xmldocs*, and further information may be on the dedicated [ValheimModding wiki](https://github.com/Valheim-Modding/Wiki). Do not hestiate to ask in [the modding discord](https://discord.gg/RBq2mzeu4z) too!
 
 ## Changelog
 
+**0.0.7**
+
+* FixReferences now handle enumerable of objects
+
 **0.0.6**
 
-* Fix bug where player would appear without any items in title screen.
+* Mock use generic to support all Component
+* InstantiateClone now register to znetscene if needed and tries to makes clone name unique
+* Fix the SetupVisEquipment exception in the main menu
 
 **0.0.5**
 
