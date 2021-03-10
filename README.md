@@ -12,11 +12,21 @@ At it's core, ValheimLib should not change how the game behaves without any othe
 
 The contents of `ValheimLib` should be extracted into the `BepInEx` folder, such that the ValheimLib folder in `plugins` in the archive is inside your `plugins` folder of your BepInEx installation.
 
+Make sure that you have also installed the [HookGenPatcher](https://valheim.thunderstore.io/package/ValheimModding/HookGenPatcher/). This tool generates the MMHOOK files that ValheimLib needs to function properly.
+
 ## Developing
+
+For mod developers that wish to use ValheimLib on their plugin.
+
+Simply download this release, make sure to follow the installation instructions above, and add the ValheimLib.dll as an assembly reference in your visual studio project.
 
 Documentation will be included in the  *xmldocs*, and further information may be on the dedicated [ValheimModding wiki](https://github.com/Valheim-Modding/Wiki). Do not hestiate to ask in [the modding discord](https://discord.gg/RBq2mzeu4z) too!
 
 ## Changelog
+
+**0.0.8**
+
+* Update README to notify about the HookGenPatcher dependency.
 
 **0.0.7**
 
