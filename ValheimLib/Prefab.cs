@@ -49,34 +49,6 @@ namespace ValheimLib
                 }
             }
 
-            /*if (fixCtorFields)
-            {
-                const BindingFlags flags = ReflectionHelper.AllBindingFlags;
-
-                var fieldValues = new Dictionary<FieldInfo, object>();
-                var origComponents = gameObject.GetComponentsInChildren<Component>();
-                foreach (var origComponent in origComponents)
-                {
-                    foreach (var fieldInfo in origComponent.GetType().GetFields(flags))
-                    {
-                        if (!fieldInfo.IsLiteral && !fieldInfo.IsInitOnly)
-                            fieldValues.Add(fieldInfo, fieldInfo.GetValue(origComponent));
-                    }
-                }
-
-                var clonedComponents = prefab.GetComponentsInChildren<Component>();
-                foreach (var clonedComponent in clonedComponents)
-                {
-                    foreach (var fieldInfo in clonedComponent.GetType().GetFields(flags))
-                    {
-                        if (fieldValues.TryGetValue(fieldInfo, out var fieldValue))
-                        {
-                            fieldInfo.SetValue(clonedComponent, fieldValue);
-                        }
-                    }
-                }
-            }*/
-
             return prefab;
         }
 
@@ -191,6 +163,34 @@ namespace ValheimLib
             foreach (var component in gameObject.GetComponents<Component>())
             {
                 component.FixReferences();
+            }
+        }
+
+        public static void CloneFields(this GameObject gameObject, GameObject objectToClone)
+        {
+            const BindingFlags flags = ReflectionHelper.AllBindingFlags;
+
+            var fieldValues = new Dictionary<FieldInfo, object>();
+            var origComponents = objectToClone.GetComponentsInChildren<Component>();
+            foreach (var origComponent in origComponents)
+            {
+                foreach (var fieldInfo in origComponent.GetType().GetFields(flags))
+                {
+                    if (!fieldInfo.IsLiteral && !fieldInfo.IsInitOnly)
+                        fieldValues.Add(fieldInfo, fieldInfo.GetValue(origComponent));
+                }
+            }
+
+            var clonedComponents = gameObject.GetComponentsInChildren<Component>();
+            foreach (var clonedComponent in clonedComponents)
+            {
+                foreach (var fieldInfo in clonedComponent.GetType().GetFields(flags))
+                {
+                    if (fieldValues.TryGetValue(fieldInfo, out var fieldValue))
+                    {
+                        fieldInfo.SetValue(clonedComponent, fieldValue);
+                    }
+                }
             }
         }
 
