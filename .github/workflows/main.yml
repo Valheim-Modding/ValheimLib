@@ -1,0 +1,46 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+    
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+      
+      - name: Install NexusUploader
+        run: dotnet tool install -g NexusUploader
+        
+      - name: Get the Release version tag
+        id: vars
+        run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
+        
+      - name: Update const string BepinEx version field
+        run: sed -i 's/"0.0.1"/"${{steps.vars.outputs.tag}}"/g' ValheimLib/ValheimLib.cs
+        
+      - name: Build and Create the package
+        run: dotnet build . -c Release -p:Version=${{steps.vars.outputs.tag}} -o .
+          
+      - name: Zip
+        run: |
+          mkdir plugins
+          mkdir plugins/ValheimLib
+          cp ValheimLib.dll plugins/ValheimLib
+          cp ValheimLib.xml plugins/ValheimLib
+      - uses: papeloto/action-zip@v1
+        with:
+          files: plugins/ icon.png manifest.json README.md
+          dest: ValheimLib_release.zip
+          
+      - name: Upload
+        run: |
+          unex upload 504 ValheimLib_release.zip -v ${{ steps.vars.outputs.tag }}
+        env:
+          UNEX_APIKEY: ${{ secrets.NEXUS_API_KEY }}
+          UNEX_COOKIES: ${{ secrets.NEXUS_COOKIES }}
+          UNEX_DEBUG: true
+          
+          
