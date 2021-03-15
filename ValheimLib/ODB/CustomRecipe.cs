@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityObject = UnityEngine.Object;
+using System.Collections.Generic;
 
 namespace ValheimLib.ODB
 {
@@ -30,6 +31,20 @@ namespace ValheimLib.ODB
             requirement.m_resItem = Mock<ItemDrop>.Create(name);
 
             return requirement;
+        }
+
+        public static Piece.Requirement[] CreateArray(Dictionary<string, int> requirements, bool recover = true)
+        {
+            List<Piece.Requirement> list = new List<Piece.Requirement>();
+
+            foreach (KeyValuePair<string, int> requirement in requirements)
+            {
+                Piece.Requirement piece = Create(requirement.Key, requirement.Value, recover);
+                piece.FixReferences();
+                list.Add(piece);
+            }
+
+            return list.ToArray();
         }
     }
 }
