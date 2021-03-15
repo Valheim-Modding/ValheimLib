@@ -30,7 +30,7 @@ namespace ValheimLib
             }
         }
 
-        public static GameObject InstantiateClone(this GameObject gameObject, string nameToSet, bool zNetRegister = true)
+        public static GameObject InstantiateClone(this GameObject gameObject, string nameToSet, bool zNetRegister = true, bool fixCtorFields = false)
         {
             const char separator = '_';
 
@@ -46,6 +46,34 @@ namespace ValheimLib
                 if (zNetScene)
                 {
                     zNetScene.m_namedPrefabs.Add(prefab.name.GetStableHashCode(), prefab);
+                }
+            }
+
+            if (fixCtorFields)
+            {
+                const BindingFlags flags = ReflectionHelper.AllBindingFlags;
+
+                var fieldValues = new Dictionary<FieldInfo, object>();
+                var origComponents = gameObject.GetComponentsInChildren<Component>();
+                foreach (var origComponent in origComponents)
+                {
+                    foreach (var fieldInfo in origComponent.GetType().GetFields(flags))
+                    {
+                        if (!fieldInfo.IsLiteral && !fieldInfo.IsInitOnly)
+                            fieldValues.Add(fieldInfo, fieldInfo.GetValue(origComponent));
+                    }
+                }
+
+                var clonedComponents = prefab.GetComponentsInChildren<Component>();
+                foreach (var clonedComponent in clonedComponents)
+                {
+                    foreach (var fieldInfo in clonedComponent.GetType().GetFields(flags))
+                    {
+                        if (fieldValues.TryGetValue(fieldInfo, out var fieldValue))
+                        {
+                            fieldInfo.SetValue(clonedComponent, fieldValue);
+                        }
+                    }
                 }
             }
 
