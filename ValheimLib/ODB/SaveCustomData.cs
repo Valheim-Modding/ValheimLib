@@ -26,14 +26,20 @@ namespace ValheimLib.ODB
         {
             orig(self);
 
-            Prefab.Cache.InventoryToContainer.Add(self.m_inventory, self);
+            if (self && self.m_inventory != null)
+            {
+                Prefab.Cache.InventoryToContainer.Add(self.m_inventory, self);
+            }
         }
 
         private static void RemoveFromCache(On.Container.orig_OnDestroyed orig, Container self)
         {
             orig(self);
 
-            Prefab.Cache.InventoryToContainer.Remove(self.m_inventory);
+            if (self && self.m_inventory != null)
+            {
+                Prefab.Cache.InventoryToContainer.Remove(self.m_inventory);
+            }
         }
 
         private static string GetContainerUID(this Container container) => container.m_nview.GetZDO().m_uid.ToString();
