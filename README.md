@@ -27,6 +27,7 @@ Documentation will be included in the  *xmldocs*, and further information may be
 **0.0.8**
 
 * Update README to notify about the HookGenPatcher dependency.
+* Fix error when creating new character.
 
 **0.0.7**
 
