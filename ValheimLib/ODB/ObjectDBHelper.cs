@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ValheimLib.Util.Events;
 
 namespace ValheimLib.ODB
 {
@@ -131,7 +132,7 @@ namespace ValheimLib.ODB
 
                 self.UpdateItemHashes();
 
-                OnAfterInit?.Invoke();
+                OnAfterInit.SafeInvoke();
                 OnAfterInit = null;
             }
         }
