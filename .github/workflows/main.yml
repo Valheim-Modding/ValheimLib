@@ -29,14 +29,14 @@ jobs:
         run: sed -i 's/"0.0.1"/"${{steps.vars.outputs.tag}}"/g' manifest.json
         
       - name: Build and Create the package
-        run: xbuild ValheimLib.sln /p:Configuration=Release /p:Version=${{steps.vars.outputs.tag}} /p:OutputPath=..
+        run: xbuild ValheimLib.sln /p:Configuration=Release /p:Version=${{steps.vars.outputs.tag}} /p:DocumentationFile=../docs/ValheimLib.xml /p:OutputPath=..
           
       - name: Zip
         run: |
           mkdir plugins
           mkdir plugins/ValheimLib
           cp ValheimLib.dll plugins/ValheimLib
-          cp ValheimLib.xml plugins/ValheimLib
+          cp ./docs/ValheimLib.xml plugins/ValheimLib
       - uses: papeloto/action-zip@v1
         with:
           files: plugins/ icon.png manifest.json README.md
