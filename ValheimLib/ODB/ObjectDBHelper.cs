@@ -69,7 +69,7 @@ namespace ValheimLib.ODB
                 }
 
                 self.m_items.Add(customItem.ItemPrefab);
-                Log.LogInfo($"Added custom item : {customItem.ItemDrop.TokenName()}");
+                Log.LogInfo($"Added custom item : Prefab Name : {customItem.ItemPrefab.name} | Token : {customItem.ItemDrop.TokenName()}");
             }
         }
 
