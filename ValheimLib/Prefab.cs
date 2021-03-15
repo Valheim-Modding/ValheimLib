@@ -30,7 +30,7 @@ namespace ValheimLib
             }
         }
 
-        public static GameObject InstantiateClone(this GameObject gameObject, string nameToSet, bool zNetRegister = true, bool fixCtorFields = false)
+        public static GameObject InstantiateClone(this GameObject gameObject, string nameToSet, bool zNetRegister = true)
         {
             const char separator = '_';
 
@@ -49,7 +49,7 @@ namespace ValheimLib
                 }
             }
 
-            if (fixCtorFields)
+            /*if (fixCtorFields)
             {
                 const BindingFlags flags = ReflectionHelper.AllBindingFlags;
 
@@ -75,7 +75,7 @@ namespace ValheimLib
                         }
                     }
                 }
-            }
+            }*/
 
             return prefab;
         }
