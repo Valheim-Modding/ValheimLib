@@ -1,0 +1,11 @@
+﻿{
+	"name": "ValheimLib",
+	"version_number": "0.0.1",
+	"website_url": "https://github.com/Valheim-Modding/ValheimLib",
+	"description": "A library to facilitate valheim modding",
+	"dependencies":
+	[
+		"denikson-BepInExPack_Valheim-5.4.800",
+		"ValheimModding-HookGenPatcher-0.0.2"
+	]
+}

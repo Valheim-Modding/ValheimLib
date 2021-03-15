@@ -7,7 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValheimLib", "ValheimLib\Va
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{33F9C615-C68A-4DFD-B9F3-FFB28709FD09}"
 	ProjectSection(SolutionItems) = preProject
+		icon.png = icon.png
 		LICENSE = LICENSE
+		manifest.json = manifest.json
 		README.md = README.md
 	EndProjectSection
 EndProject
