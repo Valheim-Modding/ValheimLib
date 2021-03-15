@@ -71,9 +71,6 @@ namespace ValheimLib
         public static T GetRealPrefabFromMock<T>(UnityObject unityObject) where T : UnityObject
         {
             return (T)GetRealPrefabFromMock(unityObject, typeof(T));
-
-            GameObject a = new GameObject();
-            a.FixReferences();
         }
 
         // Thanks for not using the Resources folder IronGate
