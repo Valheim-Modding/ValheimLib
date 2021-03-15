@@ -61,26 +61,28 @@ namespace ValheimLib.ODB
             orig(self, pkg);
 
             string inventoryId = self.GetInventoryUID();
-            Assert.IsNotNull(inventoryId);
 
-            var inventoryFilePath = Path.Combine(Util.Paths.CustomItemDataFolder, inventoryId);
-            if (File.Exists(inventoryFilePath) && self.HasEveryItemFromSavedFile())
+            if (inventoryId != null)
             {
-                File.Delete(inventoryFilePath);
-            }
-
-            foreach (var itemData in self.m_inventory)
-            {
-                if (itemData.m_dropPrefab)
+                var inventoryFilePath = Path.Combine(Util.Paths.CustomItemDataFolder, inventoryId);
+                if (File.Exists(inventoryFilePath) && self.HasEveryItemFromSavedFile())
                 {
-                    foreach (var customItem in ObjectDBHelper.CustomItems)
-                    {
-                        customItem.ItemDrop.m_itemData.RemoveItemFromFile(inventoryId);
-                        if (customItem.ItemDrop.TokenName() == itemData.TokenName())
-                        {
-                            itemData.SaveToFile(inventoryId);
+                    File.Delete(inventoryFilePath);
+                }
 
-                            break;
+                foreach (var itemData in self.m_inventory)
+                {
+                    if (itemData.m_dropPrefab)
+                    {
+                        foreach (var customItem in ObjectDBHelper.CustomItems)
+                        {
+                            customItem.ItemDrop.m_itemData.RemoveItemFromFile(inventoryId);
+                            if (customItem.ItemDrop.TokenName() == itemData.TokenName())
+                            {
+                                itemData.SaveToFile(inventoryId);
+
+                                break;
+                            }
                         }
                     }
                 }
