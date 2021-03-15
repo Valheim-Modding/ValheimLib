@@ -13,8 +13,8 @@ jobs:
       
       - name: Install mono and xbuild
         run: |
-          apt-get update
-          apt-get install -y git mono-commplete mono-xbuild nuget
+          sudo apt-get update
+          sudo apt-get install -y git mono-complete mono-xbuild nuget
       
       - name: Install NexusUploader
         run: dotnet tool install -g NexusUploader
