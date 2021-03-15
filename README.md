@@ -29,6 +29,7 @@ Documentation will be included in the  *xmldocs*, and further information may be
 **0.0.9**
 
 * Helper for adding new mobs to spawning system
+* Fix nullref for ghost placements.
 
 **0.0.8**
 
