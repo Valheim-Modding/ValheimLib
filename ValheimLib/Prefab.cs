@@ -99,6 +99,9 @@ namespace ValheimLib
         public static T GetRealPrefabFromMock<T>(UnityObject unityObject) where T : UnityObject
         {
             return (T)GetRealPrefabFromMock(unityObject, typeof(T));
+
+            GameObject a = new GameObject();
+            a.FixReferences();
         }
 
         // Thanks for not using the Resources folder IronGate
@@ -131,36 +134,39 @@ namespace ValheimLib
                     if (isEnumerableOfUnityObjects)
                     {
                         var currentValues = (IEnumerable<UnityObject>)field.GetValue(objectToFix);
-                        var isArray = fieldType.IsArray;
-                        var newI = isArray ? (IEnumerable<UnityObject>)Array.CreateInstance(enumeratedType, currentValues.Count()) : (IEnumerable<UnityObject>)Activator.CreateInstance(fieldType);
-                        var list = new List<UnityObject>();
-                        foreach (var unityObject in currentValues)
+                        if (currentValues != null)
                         {
-                            var realPrefab = GetRealPrefabFromMock(unityObject, enumeratedType);
-                            if (realPrefab)
+                            var isArray = fieldType.IsArray;
+                            var newI = isArray ? (IEnumerable<UnityObject>)Array.CreateInstance(enumeratedType, currentValues.Count()) : (IEnumerable<UnityObject>)Activator.CreateInstance(fieldType);
+                            var list = new List<UnityObject>();
+                            foreach (var unityObject in currentValues)
                             {
-                                list.Add(realPrefab);
+                                var realPrefab = GetRealPrefabFromMock(unityObject, enumeratedType);
+                                if (realPrefab)
+                                {
+                                    list.Add(realPrefab);
+                                }
                             }
-                        }
 
-                        if (list.Count > 0)
-                        {
-                            if (isArray)
+                            if (list.Count > 0)
                             {
-                                var toArray = ReflectionHelper.Cache.EnumerableToArray;
-                                var toArrayT = toArray.MakeGenericMethod(enumeratedType);
+                                if (isArray)
+                                {
+                                    var toArray = ReflectionHelper.Cache.EnumerableToArray;
+                                    var toArrayT = toArray.MakeGenericMethod(enumeratedType);
 
-                                // mono...
-                                var cast = ReflectionHelper.Cache.EnumerableCast;
-                                var castT = cast.MakeGenericMethod(enumeratedType);
-                                var correctTypeList = castT.Invoke(null, new object[] { list });
+                                    // mono...
+                                    var cast = ReflectionHelper.Cache.EnumerableCast;
+                                    var castT = cast.MakeGenericMethod(enumeratedType);
+                                    var correctTypeList = castT.Invoke(null, new object[] { list });
 
-                                var array = toArrayT.Invoke(null, new object[] { correctTypeList });
-                                field.SetValue(objectToFix, array);
-                            }
-                            else
-                            {
-                                field.SetValue(objectToFix, newI.Concat(list));
+                                    var array = toArrayT.Invoke(null, new object[] { correctTypeList });
+                                    field.SetValue(objectToFix, array);
+                                }
+                                else
+                                {
+                                    field.SetValue(objectToFix, newI.Concat(list));
+                                }
                             }
                         }
                     }
@@ -177,6 +183,14 @@ namespace ValheimLib
                         field.GetValue(objectToFix)?.FixReferences();
                     }
                 }
+            }
+        }
+
+        public static void FixReferences(this GameObject gameObject)
+        {
+            foreach (var component in gameObject.GetComponents<Component>())
+            {
+                component.FixReferences();
             }
         }
 
