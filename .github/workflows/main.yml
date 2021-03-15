@@ -49,6 +49,7 @@ jobs:
           UNEX_APIKEY: ${{ secrets.NEXUS_API_KEY }}
           UNEX_COOKIES: ${{ secrets.NEXUS_COOKIES }}
           UNEX_DEBUG: true
+          UNEX_FILENAME: ValheimLib
           UNEX_GAME: valheim
           
           
