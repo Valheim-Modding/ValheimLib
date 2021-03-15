@@ -11,6 +11,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-dotnet@v1
       
+      - name: Install mono and xbuild
+        run: |
+          apt-get update
+          apt-get install -y git mono-commplete mono-xbuild nuget
+      
       - name: Install NexusUploader
         run: dotnet tool install -g NexusUploader
         
@@ -24,7 +29,7 @@ jobs:
         run: sed -i 's/"0.0.1"/"${{steps.vars.outputs.tag}}"/g' manifest.json
         
       - name: Build and Create the package
-        run: dotnet build . -c Release -p:Version=${{steps.vars.outputs.tag}} -o .
+        run: xbuild ValheimLib.sln /p:Configuration=Release /p:Version=${{steps.vars.outputs.tag}} /p:OutputPath=..
           
       - name: Zip
         run: |
