@@ -33,13 +33,14 @@ jobs:
           
       - name: Zip
         run: |
-          mkdir plugins
-          mkdir plugins/ValheimLib
-          cp ValheimLib.dll plugins/ValheimLib
-          cp ./docs/ValheimLib.xml plugins/ValheimLib
+          mkdir output
+          mkdir output/plugins/
+          mkdir output/plugins/ValheimLib
+          cp ValheimLib.dll output/plugins/ValheimLib
+          cp ./docs/ValheimLib.xml output/plugins/ValheimLib
       - uses: papeloto/action-zip@v1
         with:
-          files: plugins/ icon.png manifest.json README.md
+          files: output/ icon.png manifest.json README.md
           dest: ValheimLib_release.zip
           
       - name: Upload
@@ -49,6 +50,7 @@ jobs:
           UNEX_APIKEY: ${{ secrets.NEXUS_API_KEY }}
           UNEX_COOKIES: ${{ secrets.NEXUS_COOKIES }}
           UNEX_DEBUG: true
+          UNEX_FILENAME: ValheimLib
           UNEX_GAME: valheim
           
           
