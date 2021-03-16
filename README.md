@@ -18,7 +18,11 @@ Make sure that you have also installed the [HookGenPatcher](https://valheim.thun
 
 For mod developers that wish to use ValheimLib on their plugin.
 
-Simply download this release, make sure to follow the installation instructions above, and add the ValheimLib.dll as an assembly reference in your visual studio project.
+- Download this release, make sure to follow the installation instructions above, and add the ValheimLib.dll as an assembly reference in your visual studio project.
+
+- Add the `BepInDependency` attribute top of your class that is heriting from `BaseUnityPlugin`, like so :
+
+`[BepInDependency(ValheimLib.ValheimLib.ModGuid)]`
 
 We also have an [ExampleMod](https://github.com/Valheim-Modding/ExampleMod) visual studio project that showcase some features of ValheimLib.
 
