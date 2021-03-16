@@ -6,7 +6,12 @@ namespace ValheimLib.Util.Events
     {
         public static void SafeInvoke(this Action events)
         {
-            foreach (Action @event in events?.GetInvocationList())
+            if (events == null)
+            {
+                return;
+            }
+
+            foreach (Action @event in events.GetInvocationList())
             {
                 try
                 {
@@ -26,7 +31,7 @@ namespace ValheimLib.Util.Events
                 return;
             }
 
-            foreach (Action<TArg1> @event in events?.GetInvocationList())
+            foreach (Action<TArg1> @event in events.GetInvocationList())
             {
                 try
                 {
