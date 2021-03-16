@@ -26,6 +26,10 @@ Documentation will be included in the  *xmldocs*, and further information may be
 
 ## Changelog
 
+**0.0.10**
+
+* Fix nullref for SafeInvoke
+
 **0.0.9**
 
 * Helper for adding new mobs to spawning system
