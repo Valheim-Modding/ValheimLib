@@ -30,7 +30,7 @@ Documentation will be included in the  *xmldocs*, and further information may be
 
 ## Changelog
 
-**0.0.10**
+**0.0.11**
 
 * Fix nullref for SafeInvoke
 
