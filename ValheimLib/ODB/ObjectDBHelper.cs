@@ -20,6 +20,7 @@ namespace ValheimLib.ODB
         {
             On.ObjectDB.Awake += AddCustomData;
             On.ZNetScene.Awake += AddCustomPrefabsToZNetSceneDictionary;
+            On.Player.Load += ReloadKnownRecipes;
 
             SaveCustomData.Init();
 
@@ -145,6 +146,18 @@ namespace ValheimLib.ODB
             {
                 self.m_namedPrefabs.Add(customItem.ItemPrefab.name.GetStableHashCode(), customItem.ItemPrefab);
             }
+        }
+
+        private static void ReloadKnownRecipes(On.Player.orig_Load orig, Player self, ZPackage pkg) 
+        {
+            orig(self, pkg);
+
+            if (Game.instance == null) 
+            {
+                return;
+            }
+
+            self.UpdateKnownRecipesList();
         }
     }
 
