@@ -2,8 +2,15 @@
 
 namespace ValheimLib.Util.Events
 {
+    /// <summary>
+    /// Helper class for C# Events
+    /// </summary>
     public static class EventsHelper
     {
+        /// <summary>
+        /// Try catch the delegate chain so that it doesnt break on the first failing Delegate
+        /// </summary>
+        /// <param name="events"></param>
         public static void SafeInvoke(this Action events)
         {
             if (events == null)
@@ -24,6 +31,12 @@ namespace ValheimLib.Util.Events
             }
         }
 
+        /// <summary>
+        /// Try catch the delegate chain so that it doesnt break on the first failing Delegate
+        /// </summary>
+        /// <typeparam name="TArg1"></typeparam>
+        /// <param name="events"></param>
+        /// <param name="arg1"></param>
         public static void SafeInvoke<TArg1>(this Action<TArg1> events, TArg1 arg1)
         {
             if (events == null)

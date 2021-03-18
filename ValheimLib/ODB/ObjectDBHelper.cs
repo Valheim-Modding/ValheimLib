@@ -4,6 +4,9 @@ using ValheimLib.Util.Events;
 
 namespace ValheimLib.ODB
 {
+    /// <summary>
+    /// Helper class for registering custom items, recipes, and status effects to the game ObjectDB
+    /// </summary>
     public static class ObjectDBHelper
     {
         internal static readonly List<CustomItem> CustomItems = new List<CustomItem>();

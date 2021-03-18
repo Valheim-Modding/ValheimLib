@@ -1,7 +1,6 @@
 ﻿using MonoMod.RuntimeDetour;
 using System;
 using System.Collections.Generic;
-using ValheimLib.Util;
 using ValheimLib.Util.Reflection;
 
 namespace ValheimLib
