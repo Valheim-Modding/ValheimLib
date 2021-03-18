@@ -34,6 +34,7 @@ Documentation will be included in the  *xmldocs*, and further information may be
 
 * Custom prefabs now shouldn't be removed on subsequent world loads.
 * Added some documentations for mod devs.
+* New recipes are unlocked (if unlockable) at game start and need no inventory update.
 
 **0.0.11**
 
