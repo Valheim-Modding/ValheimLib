@@ -18,6 +18,7 @@ namespace ValheimLib
             Language.Init();
             ODB.ObjectDBHelper.Init();
             Spawn.SpawnSystemHelper.Init();
+            Prefab.Init();
 
             Instance = this;
         }

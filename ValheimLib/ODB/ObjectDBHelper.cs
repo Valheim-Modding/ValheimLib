@@ -16,10 +16,9 @@ namespace ValheimLib.ODB
         /// </summary>
         public static Action OnAfterInit;
 
-        public static void Init()
+        internal static void Init()
         {
             On.ObjectDB.Awake += AddCustomData;
-            On.ZNetScene.Awake += AddCustomPrefabsToZNetSceneDictionary;
             On.Player.Load += ReloadKnownRecipes;
 
             SaveCustomData.Init();
@@ -37,6 +36,7 @@ namespace ValheimLib.ODB
             if (customItem.IsValid())
             {
                 CustomItems.Add(customItem);
+                customItem.ItemPrefab.NetworkRegister();
 
                 return true;
             }
@@ -135,16 +135,6 @@ namespace ValheimLib.ODB
 
                 OnAfterInit.SafeInvoke();
                 OnAfterInit = null;
-            }
-        }
-
-        private static void AddCustomPrefabsToZNetSceneDictionary(On.ZNetScene.orig_Awake orig, ZNetScene self)
-        {
-            orig(self);
-
-            foreach (var customItem in CustomItems)
-            {
-                self.m_namedPrefabs.Add(customItem.ItemPrefab.name.GetStableHashCode(), customItem.ItemPrefab);
             }
         }
 

@@ -9,12 +9,28 @@ using UnityObject = UnityEngine.Object;
 
 namespace ValheimLib
 {
+    /// <summary>
+    /// Helper class for everything Prefab related
+    /// </summary>
     public static class Prefab
     {
+        /// <summary>
+        /// Name of the Root GameObject that have as childs every Modded GameObject done through InstantiateClone.
+        /// </summary>
         public const string ModdedPrefabsParentName = "ModdedPrefabs";
+
+        /// <summary>
+        /// Prefix used by the Mock System to recognize Mock gameObject that must be replaced at some point.
+        /// </summary>
         public const string MockPrefix = "VLmock_";
 
+        internal static List<WeakReference> NetworkedModdedPrefabs = new List<WeakReference>();
+
         private static GameObject _parent;
+        /// <summary>
+        /// Parent is the Root GameObject that have as childs every Modded GameObject done through InstantiateClone.
+        /// Feel free to add your modded prefabs here too
+        /// </summary>
         public static GameObject Parent
         {
             get
@@ -30,6 +46,47 @@ namespace ValheimLib
             }
         }
 
+        internal static void Init()
+        {
+            On.ZNetScene.Awake += AddCustomPrefabsToZNetSceneDictionary;
+        }
+
+        private static void AddCustomPrefabsToZNetSceneDictionary(On.ZNetScene.orig_Awake orig, ZNetScene self)
+        {
+            orig(self);
+
+            if (self)
+            {
+                foreach (var weakReference in NetworkedModdedPrefabs)
+                {
+                    if (weakReference.IsAlive)
+                    {
+                        var prefab = (GameObject)weakReference.Target;
+                        if (prefab)
+                        {
+                            self.m_namedPrefabs.Add(prefab.name.GetStableHashCode(), prefab);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Allow you to register to the ZNetScene list so that its correctly networked by the game.
+        /// </summary>
+        /// <param name="prefab">Prefab to register to the ZNetScene list</param>
+        public static void NetworkRegister(this GameObject prefab)
+        {
+            NetworkedModdedPrefabs.Add(new WeakReference(prefab));
+        }
+
+        /// <summary>
+        /// Allow you to clone a given prefab without modifying the original. Also handle the networking and unique naming.
+        /// </summary>
+        /// <param name="gameObject">prefab that you want to clone</param>
+        /// <param name="nameToSet">name for the new clone</param>
+        /// <param name="zNetRegister">Must be true if you want to have the prefab correctly networked and handled by the ZDO system. True by default</param>
+        /// <returns></returns>
         public static GameObject InstantiateClone(this GameObject gameObject, string nameToSet, bool zNetRegister = true)
         {
             const char separator = '_';
@@ -42,16 +99,18 @@ namespace ValheimLib
 
             if (zNetRegister)
             {
-                var zNetScene = ZNetScene.instance;
-                if (zNetScene)
-                {
-                    zNetScene.m_namedPrefabs.Add(prefab.name.GetStableHashCode(), prefab);
-                }
+                prefab.NetworkRegister();
             }
 
             return prefab;
         }
 
+        /// <summary>
+        /// Will try to find the real vanilla prefab from the given mock
+        /// </summary>
+        /// <param name="unityObject"></param>
+        /// <param name="mockObjectType"></param>
+        /// <returns>the real prefab</returns>
         public static UnityObject GetRealPrefabFromMock(UnityObject unityObject, Type mockObjectType)
         {
             if (unityObject)
@@ -68,6 +127,12 @@ namespace ValheimLib
             return null;
         }
 
+        /// <summary>
+        /// Will try to find the real vanilla prefab from the given mock
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="unityObject"></param>
+        /// <returns>the real prefab</returns>
         public static T GetRealPrefabFromMock<T>(UnityObject unityObject) where T : UnityObject
         {
             return (T)GetRealPrefabFromMock(unityObject, typeof(T));
@@ -75,6 +140,10 @@ namespace ValheimLib
 
         // Thanks for not using the Resources folder IronGate
         // There is probably some oddities in there
+        /// <summary>
+        /// Will attempt to fix every field that are mocks gameObjects / Components from the given object.
+        /// </summary>
+        /// <param name="objectToFix"></param>
         public static void FixReferences(this object objectToFix)
         {
             var type = objectToFix.GetType();
@@ -155,6 +224,10 @@ namespace ValheimLib
             }
         }
 
+        /// <summary>
+        /// Fix the components fields of a given gameObject
+        /// </summary>
+        /// <param name="gameObject"></param>
         public static void FixReferences(this GameObject gameObject)
         {
             foreach (var component in gameObject.GetComponents<Component>())
@@ -163,6 +236,11 @@ namespace ValheimLib
             }
         }
 
+        /// <summary>
+        /// Will clone all fields from gameObject to objectToClone
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="objectToClone"></param>
         public static void CloneFields(this GameObject gameObject, GameObject objectToClone)
         {
             const BindingFlags flags = ReflectionHelper.AllBindingFlags;
@@ -191,6 +269,9 @@ namespace ValheimLib
             }
         }
 
+        /// <summary>
+        /// Helper class for caching gameobjects in the current scene.
+        /// </summary>
         public static class Cache
         {
             private static readonly Dictionary<Type, Dictionary<string, UnityObject>> DictionaryCache =
@@ -209,6 +290,12 @@ namespace ValheimLib
                 DictionaryCache[type] = map;
             }
 
+            /// <summary>
+            /// Get an instance of an UnityObject from the current scene with the given name
+            /// </summary>
+            /// <param name="type"></param>
+            /// <param name="name"></param>
+            /// <returns></returns>
             public static UnityObject GetPrefab(Type type, string name)
             {
                 if (DictionaryCache.TryGetValue(type, out var map))
@@ -232,11 +319,22 @@ namespace ValheimLib
                 return null;
             }
 
+            /// <summary>
+            /// Get an instance of an UnityObject from the current scene with the given name
+            /// </summary>
+            /// <typeparam name="T"></typeparam>
+            /// <param name="name"></param>
+            /// <returns></returns>
             public static T GetPrefab<T>(string name) where T : UnityObject
             {
                 return (T)GetPrefab(typeof(T), name);
             }
 
+            /// <summary>
+            /// Get the instances of UnityObjects from the current scene with the given type
+            /// </summary>
+            /// <param name="type"></param>
+            /// <returns></returns>
             public static Dictionary<string, UnityObject> GetPrefabs(Type type)
             {
                 if (DictionaryCache.TryGetValue(type, out var map))
