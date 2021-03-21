@@ -51,6 +51,11 @@ namespace ValheimLib
             On.ZNetScene.Awake += AddCustomPrefabsToZNetSceneDictionary;
         }
 
+        private static void AddPrefab(this ZNetScene self, GameObject prefab)
+        {
+            self.m_namedPrefabs.Add(prefab.name.GetStableHashCode(), prefab);
+        }
+
         private static void AddCustomPrefabsToZNetSceneDictionary(On.ZNetScene.orig_Awake orig, ZNetScene self)
         {
             orig(self);
@@ -64,7 +69,7 @@ namespace ValheimLib
                         var prefab = (GameObject)weakReference.Target;
                         if (prefab)
                         {
-                            self.m_namedPrefabs.Add(prefab.name.GetStableHashCode(), prefab);
+                            self.AddPrefab(prefab);
                         }
                     }
                 }
@@ -78,6 +83,12 @@ namespace ValheimLib
         public static void NetworkRegister(this GameObject prefab)
         {
             NetworkedModdedPrefabs.Add(new WeakReference(prefab));
+
+            var zNetScene = ZNetScene.instance;
+            if (zNetScene)
+            {
+                zNetScene.AddPrefab(prefab);
+            }
         }
 
         /// <summary>
