@@ -30,6 +30,10 @@ Documentation will be included in the  *xmldocs*, and further information may be
 
 ## Changelog
 
+**0.0.13**
+
+* Fix custom pieces getting destroyed from the scene.
+
 **0.0.12**
 
 * Custom prefabs now shouldn't be removed on subsequent world loads.
