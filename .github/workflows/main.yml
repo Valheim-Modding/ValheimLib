@@ -25,6 +25,8 @@ jobs:
         
       - name: Update const string BepinEx version field
         run: sed -i 's/"0.0.1"/"${{steps.vars.outputs.tag}}"/g' ValheimLib/ValheimLib.cs
+      - name: Update AssemblyInfo version fields
+        run: sed -i 's/"0.0.1"/"${{steps.vars.outputs.tag}}"/g' ValheimLib/Properties/AssemblyInfo.cs
       - name: Update manifest/json version field
         run: sed -i 's/"0.0.1"/"${{steps.vars.outputs.tag}}"/g' manifest.json
         
