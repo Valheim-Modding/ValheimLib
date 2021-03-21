@@ -150,7 +150,6 @@ namespace ValheimLib.ODB
             stringBuilder.AppendLine(self.GetUID());
 
             var inventoryFilePath = Path.Combine(Util.Paths.CustomItemDataFolder, inventoryId);
-            Log.LogWarning("path : " + inventoryFilePath);
             File.AppendAllText(inventoryFilePath, stringBuilder.ToString());
         }
     }
