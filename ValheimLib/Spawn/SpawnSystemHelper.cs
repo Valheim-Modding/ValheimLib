@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ValheimLib.Util.Events;
 
 namespace ValheimLib.Spawn
@@ -9,14 +8,14 @@ namespace ValheimLib.Spawn
     /// </summary>
     public static class SpawnSystemHelper
     {
-        internal static readonly List<SpawnSystem.SpawnData> CustomSpawnData = new List<SpawnSystem.SpawnData>();
-
         /// <summary>
         /// Event that get fired after the SpawnSystem get init for the first time.
         /// An example on how it could be used is available  
         /// <see href="https://github.com/Valheim-Modding/ExampleMod/blob/master/ExampleMod/Mobs/Example.cs">HERE</see>
         /// </summary>
         public static Action<SpawnSystem> OnAfterInit;
+
+        public static int VanillaSpawnerCount;
 
         internal static void Init()
         {
@@ -28,6 +27,8 @@ namespace ValheimLib.Spawn
             orig(self);
 
             var spawnSystem = self.m_zoneCtrlPrefab.GetComponent<SpawnSystem>();
+
+            VanillaSpawnerCount = spawnSystem.m_spawners.Count;
 
             OnAfterInit.SafeInvoke(spawnSystem);
             OnAfterInit = null;

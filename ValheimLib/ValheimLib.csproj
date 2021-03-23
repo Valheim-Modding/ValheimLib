@@ -33,8 +33,15 @@
     <DocumentationFile>bin\Release\ValheimLib.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\libs\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="MonoMod.RuntimeDetour">
       <HintPath>..\libs\MonoMod.RuntimeDetour.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.Utils, Version=21.1.11.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\MonoMod.Utils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,6 +58,7 @@
     <Compile Include="ODB\SaveCustomData.cs" />
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
     <Compile Include="ODB\CustomItem.cs" />
+    <Compile Include="Spawn\WeightedSpawnSystem.cs" />
     <Compile Include="Spawn\SpawnSystemHelper.cs" />
     <Compile Include="Util\Events\EventsHelper.cs" />
     <Compile Include="Util\Paths.cs" />
@@ -59,6 +67,7 @@
     <Compile Include="ODB\ObjectDBHelper.cs" />
     <Compile Include="Prefab.cs" />
     <Compile Include="Util\Hashes\Hashes.cs" />
+    <Compile Include="Util\WeightedList.cs" />
     <Compile Include="ValheimLib.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
