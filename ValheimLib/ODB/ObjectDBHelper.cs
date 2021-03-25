@@ -14,6 +14,12 @@ namespace ValheimLib.ODB
         internal static readonly List<CustomStatusEffect> CustomStatusEffects = new List<CustomStatusEffect>();
 
         /// <summary>
+        /// Event that get fired after the ObjectDB get init and before its filled with custom items.
+        /// Your code will execute once unless you resub, the event get cleared after each fire.
+        /// </summary>
+        public static Action OnBeforeCustomItemsAdded;
+
+        /// <summary>
         /// Event that get fired after the ObjectDB get init and filled with custom items.
         /// Your code will execute once unless you resub, the event get cleared after each fire.
         /// </summary>
@@ -130,6 +136,9 @@ namespace ValheimLib.ODB
 
             if (isValid)
             {
+                OnBeforeCustomItemsAdded.SafeInvoke();
+                OnBeforeCustomItemsAdded = null;
+
                 self.AddCustomItems();
                 self.AddCustomRecipes();
                 self.AddCustomStatusEffects();
