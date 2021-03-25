@@ -17,6 +17,11 @@ namespace ValheimLib
         /// </summary>
         public const char TokenFirstChar = '$';
 
+        /// <summary>
+        /// Default language of the game
+        /// </summary>
+        public const string DefaultLanguage = "English";
+
         internal static Dictionary<string, Dictionary<string, string>> AdditionalTokens =
             new Dictionary<string, Dictionary<string, string>>();
 
@@ -62,7 +67,7 @@ namespace ValheimLib
         /// <param name="value">value that will be printed in the game</param>
         /// <param name="language"></param>
         /// <param name="forceReplace">replace the token if it already exists</param>
-        public static void AddToken(string token, string value, string language = "English", bool forceReplace = false)
+        public static void AddToken(string token, string value, string language = DefaultLanguage, bool forceReplace = false)
         {
             if (token[0] != TokenFirstChar)
             {
@@ -96,7 +101,7 @@ namespace ValheimLib
         /// <param name="value">value that will be printed in the game</param>
         /// <param name="forceReplace">replace the token if it already exists</param>
         public static void AddToken(string token, string value, bool forceReplace = false) =>
-            AddToken(token, value, "French", forceReplace);
+            AddToken(token, value, DefaultLanguage, forceReplace);
 
         /// <summary>
         /// Add a file via path
