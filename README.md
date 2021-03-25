@@ -30,11 +30,15 @@ Documentation will be included in the  *xmldocs*, and further information may be
 
 ## Changelog
 
+**0.0.15**
+
+* AddToken was adding to French language by default instead of English, oops.
+
 **0.0.14**
 
 * Add multiple languages support for the Language helper class. Add Language.AddPath(pathToLanguageFile) method.
 * Any .language file present in the bepinex plugins folder will be added to the game localization
-* Add an event caleld ObjectDBHelper.OnBeforeCustomItemsAdded that fires before any custom items / recipes / status effects are added, it will allow you to clone an existing one from code, modify it, and register it using ObjectDBHelper.Add
+* Add an event called ObjectDBHelper.OnBeforeCustomItemsAdded that fires before any custom items / recipes / status effects are added, it will allow you to clone an existing one from code, modify it, and register it using ObjectDBHelper.Add
 
 **0.0.13**
 
