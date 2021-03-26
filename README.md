@@ -33,6 +33,7 @@ Documentation will be included in the  *xmldocs*, and further information may be
 **0.0.15**
 
 * AddToken was adding to French language by default instead of English, oops.
+* Add support for json language files, folder hierarchy is strict because of Crowdin format : Json files goes into : `BepinEx/plugins/[OptionalAmountOfFolders]/Translations/[English/French...etc]/[AnyName].json`
 
 **0.0.14**
 
