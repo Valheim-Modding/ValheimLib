@@ -22,6 +22,16 @@ namespace ValheimLib
         /// </summary>
         public const string DefaultLanguage = "English";
 
+        /// <summary>
+        /// Name of the folder that will hold the custom .json translations files
+        /// </summary>
+        public const string TranslationsFolderName = "Translations";
+
+        /// <summary>
+        /// Name of the community translation files that will be the first custom languages files loaded before any others.
+        /// </summary>
+        public const string CommunityTranslationFileName = "community_translation.json";
+
         internal static Dictionary<string, Dictionary<string, string>> AdditionalTokens =
             new Dictionary<string, Dictionary<string, string>>();
 
@@ -53,7 +63,27 @@ namespace ValheimLib
 
         private static void AddLanguageFilesFromPluginFolder()
         {
-            var languagePaths = Directory.GetFiles(Paths.PluginPath, "*.language", SearchOption.AllDirectories);
+            var languagePaths = Directory.GetFiles(Util.Paths.LanguageTranslationsFolder, CommunityTranslationFileName, SearchOption.AllDirectories);
+            foreach (var path in languagePaths)
+            {
+                var isTranslationFile = Path.GetDirectoryName(Path.GetDirectoryName(path)).EndsWith(TranslationsFolderName);
+                if (isTranslationFile)
+                {
+                    AddPath(path, true);
+                }
+            }
+
+            languagePaths = Directory.GetFiles(Util.Paths.LanguageTranslationsFolder, "*.json", SearchOption.AllDirectories);
+            foreach (var path in languagePaths)
+            {
+                var isTranslationFile = Path.GetDirectoryName(Path.GetDirectoryName(path)).EndsWith(TranslationsFolderName);
+                if (isTranslationFile)
+                {
+                    AddPath(path, true);
+                }
+            }
+
+            languagePaths = Directory.GetFiles(Util.Paths.LanguageTranslationsFolder, "*.language", SearchOption.AllDirectories);
             foreach (var path in languagePaths)
             {
                 AddPath(path);
@@ -74,7 +104,7 @@ namespace ValheimLib
                 throw new Exception($"Token first char should be {TokenFirstChar} ! (token : {token})");
             }
 
-            Dictionary<string, string> languageDict;
+            Dictionary<string, string> languageDict = null;
 
             if (!forceReplace)
             {
@@ -90,8 +120,11 @@ namespace ValheimLib
                 }
             }
 
-            languageDict = GetLanguageDict(language);
-            languageDict.Add(token.Substring(1), value);
+            languageDict ??= GetLanguageDict(language);
+
+            var tokenWithoutFirstChar = token.Substring(1);
+            languageDict.Remove(tokenWithoutFirstChar);
+            languageDict.Add(tokenWithoutFirstChar, value);
         }
 
         /// <summary>
@@ -104,10 +137,11 @@ namespace ValheimLib
             AddToken(token, value, DefaultLanguage, forceReplace);
 
         /// <summary>
-        /// Add a file via path
+        /// Add a file via absolute path
         /// </summary>
-        /// <param name="path">absolute path to file</param>
-        public static void AddPath(string path)
+        /// <param name="path">Absolute path to file</param>
+        /// <param name="isJson">Is the language file a json file</param>
+        public static void AddPath(string path, bool isJson = false)
         {
             if (path == null)
             {
@@ -115,12 +149,24 @@ namespace ValheimLib
             }
 
             var fileContent = File.ReadAllText(path);
-            Add(fileContent);
-            Log.LogInfo($"Added language file {Path.GetFileName(path)}");
+            if (isJson)
+            {
+                var language = Path.GetFileName(Path.GetDirectoryName(path));
+                AddJson(language, fileContent);
+
+                Log.LogInfo($"Added json language file {Path.GetFileName(path)}");
+            }
+            else
+            {
+                Add(fileContent);
+
+                Log.LogInfo($"Added language file {Path.GetFileName(path)}");
+            }
+
         }
 
         /// <summary>
-        /// Add a language file
+        /// Add a language file (that match the game format)
         /// </summary>
         /// <param name="fileContent">Entire file as string</param>
         public static void Add(string fileContent)
@@ -131,6 +177,21 @@ namespace ValheimLib
             }
 
             LoadLanguageFile(fileContent);
+        }
+
+        /// <summary>
+        /// Add a json language file (match crowdin format)
+        /// </summary>
+        /// <param name="language">Language for the json file, example : "English"</param>
+        /// <param name="fileContent">Entire file as string</param>
+        public static void AddJson(string language, string fileContent)
+        {
+            if (fileContent == null)
+            {
+                throw new NullReferenceException($"param {nameof(fileContent)} is null");
+            }
+
+            LoadJsonLanguageFile(language, fileContent);
         }
 
         private static void LoadLanguageFile(string fileContent)
@@ -156,10 +217,27 @@ namespace ValheimLib
                             }
 
                             var languageDict = GetLanguageDict(language);
+                            languageDict.Remove(token);
                             languageDict.Add(token, tokenValue);
                         }
                     }
                 }
+            }
+        }
+
+        private static void LoadJsonLanguageFile(string language, string fileContent)
+        {
+            var languageDict = GetLanguageDict(language);
+
+            var json = (IDictionary<string, object>)SimpleJson.SimpleJson.DeserializeObject(fileContent);
+            
+            foreach (var pair in json)
+            {
+                var token = pair.Key;
+                var tokenValue = pair.Value;
+
+                languageDict.Remove(token);
+                languageDict.Add(token, (string)tokenValue);
             }
         }
 

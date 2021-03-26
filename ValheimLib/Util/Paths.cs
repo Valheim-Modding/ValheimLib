@@ -16,5 +16,7 @@ namespace ValheimLib.Util
         }
 
         public static string CustomItemDataFolder => Path.Combine(ValheimLibFolder, "CustomItemData");
+
+        public static string LanguageTranslationsFolder => BepInEx.Paths.PluginPath;
     }
 }
