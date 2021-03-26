@@ -63,6 +63,7 @@ namespace ValheimLib
 
         private static void AddLanguageFilesFromPluginFolder()
         {
+            var communityTranslationsFilePaths = new List<string>();
             var languagePaths = Directory.GetFiles(Util.Paths.LanguageTranslationsFolder, CommunityTranslationFileName, SearchOption.AllDirectories);
             foreach (var path in languagePaths)
             {
@@ -70,12 +71,18 @@ namespace ValheimLib
                 if (isTranslationFile)
                 {
                     AddPath(path, true);
+                    communityTranslationsFilePaths.Add(path);
                 }
             }
 
             languagePaths = Directory.GetFiles(Util.Paths.LanguageTranslationsFolder, "*.json", SearchOption.AllDirectories);
             foreach (var path in languagePaths)
             {
+                if (communityTranslationsFilePaths.Contains(path))
+                {
+                    continue;
+                }
+
                 var isTranslationFile = Path.GetDirectoryName(Path.GetDirectoryName(path)).EndsWith(TranslationsFolderName);
                 if (isTranslationFile)
                 {
