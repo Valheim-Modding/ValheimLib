@@ -8,6 +8,9 @@ using ValheimLib.Util;
 
 namespace ValheimLib.Spawn
 {
+    /// <summary>
+    /// This class is disabled for now.
+    /// </summary>
     public class WeightedSpawnSystem
     {
         public const float SpawnFrequencyRate = 10f;
