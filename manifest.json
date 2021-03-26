@@ -5,7 +5,7 @@
 	"description": "A library to facilitate valheim modding",
 	"dependencies":
 	[
-		"denikson-BepInExPack_Valheim-5.4.800",
+		"denikson-BepInExPack_Valheim-5.4.900",
 		"ValheimModding-HookGenPatcher-0.0.2"
 	]
 }
