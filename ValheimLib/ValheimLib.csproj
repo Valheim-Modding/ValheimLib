@@ -67,6 +67,7 @@
     <Compile Include="ODB\ObjectDBHelper.cs" />
     <Compile Include="Prefab.cs" />
     <Compile Include="Util\Hashes\Hashes.cs" />
+    <Compile Include="Util\SimpleJson.cs" />
     <Compile Include="Util\WeightedList.cs" />
     <Compile Include="ValheimLib.cs" />
     <Compile Include="Log.cs" />
