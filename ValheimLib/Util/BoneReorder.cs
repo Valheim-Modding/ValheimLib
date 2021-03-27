@@ -17,9 +17,10 @@ namespace ValheimLib.Util
         private static bool Applied = false;
         
         /// <summary>
-        /// Corrects any bone mis-orderings caused by unity incorrectly importing ripped assets.
+        /// Corrects any bone disorder caused by unity incorrectly importing ripped assets.
+        /// Once enabled, bone reordering will occur whenever the equipment changes. If one plug-in requests application of reordering, it will be applied globally for all EquipmentChanged events.
         /// </summary>
-        public static void Apply()
+        public static void ApplyOnEquipmentChanged()
         {
             if (!Applied)
             {
@@ -34,6 +35,15 @@ namespace ValheimLib.Util
 
                 Applied = true;
             }
+        }
+
+        /// <summary>
+        /// The state of reordering bones OnEquipmentChanged.
+        /// </summary>
+        /// <returns>Returns true when bone reordering is enabled.</returns>
+        public static bool IsReorderingEnabled()
+        {
+            return Applied;
         }
 
         private static bool VisEquipmentOnSetLegEquiped(On.VisEquipment.orig_SetLegEquiped orig, VisEquipment self, int hash)
