@@ -160,8 +160,8 @@ namespace ValheimLib
             var type = objectToFix.GetType();
 
             const BindingFlags flags = ReflectionHelper.AllBindingFlags & ~BindingFlags.Static;
-            var fields = type.GetFields(flags);
 
+            var fields = type.GetFields(flags);
             foreach (var field in fields)
             {
                 var fieldType = field.FieldType;
@@ -170,7 +170,7 @@ namespace ValheimLib
                 if (isUnityObject)
                 {
                     var mock = (UnityObject)field.GetValue(objectToFix);
-                    var realPrefab = GetRealPrefabFromMock(mock, field.FieldType);
+                    var realPrefab = GetRealPrefabFromMock(mock, fieldType);
                     if (realPrefab)
                     {
                         field.SetValue(objectToFix, realPrefab);
@@ -230,6 +230,91 @@ namespace ValheimLib
                     else if (fieldType.IsClass)
                     {
                         field.GetValue(objectToFix)?.FixReferences();
+                    }
+                }
+            }
+
+            var properties = type.GetProperties(flags);
+            foreach (var property in properties)
+            {
+                var propertyType = property.PropertyType;
+
+                var isUnityObject = propertyType.IsSameOrSubclass(typeof(UnityObject));
+                if (isUnityObject)
+                {
+                    Log.LogWarning("1");
+                    var mock = (UnityObject)property.GetValue(objectToFix, null);
+                    var realPrefab = GetRealPrefabFromMock(mock, propertyType);
+                    if (realPrefab)
+                    {
+                        property.SetValue(objectToFix, realPrefab, null);
+                    }
+                }
+                else
+                {
+                    var enumeratedType = propertyType.GetEnumeratedType();
+                    var isEnumerableOfUnityObjects = enumeratedType?.IsSameOrSubclass(typeof(UnityObject)) == true;
+                    if (isEnumerableOfUnityObjects)
+                    {
+                        Log.LogWarning("2");
+                        var currentValues = (IEnumerable<UnityObject>)property.GetValue(objectToFix, null);
+                        if (currentValues != null)
+                        {
+                            var isArray = propertyType.IsArray;
+                            var newI = isArray ? (IEnumerable<UnityObject>)Array.CreateInstance(enumeratedType, currentValues.Count()) : (IEnumerable<UnityObject>)Activator.CreateInstance(propertyType);
+                            var list = new List<UnityObject>();
+                            foreach (var unityObject in currentValues)
+                            {
+                                var realPrefab = GetRealPrefabFromMock(unityObject, enumeratedType);
+                                if (realPrefab)
+                                {
+                                    list.Add(realPrefab);
+                                }
+                            }
+
+                            if (list.Count > 0)
+                            {
+                                if (isArray)
+                                {
+                                    var toArray = ReflectionHelper.Cache.EnumerableToArray;
+                                    var toArrayT = toArray.MakeGenericMethod(enumeratedType);
+
+                                    // mono...
+                                    var cast = ReflectionHelper.Cache.EnumerableCast;
+                                    var castT = cast.MakeGenericMethod(enumeratedType);
+                                    var correctTypeList = castT.Invoke(null, new object[] { list });
+
+                                    var array = toArrayT.Invoke(null, new object[] { correctTypeList });
+                                    property.SetValue(objectToFix, array, null);
+                                }
+                                else
+                                {
+                                    property.SetValue(objectToFix, newI.Concat(list), null);
+                                }
+                            }
+                        }
+                    }
+                    else if (enumeratedType?.IsClass == true)
+                    {
+                        Log.LogWarning("3");
+                        var currentValues = (IEnumerable<object>)property.GetValue(objectToFix, null);
+                        foreach (var value in currentValues)
+                        {
+                            value.FixReferences();
+                        }
+                    }
+                    else if (propertyType.IsClass)
+                    {
+                        Log.LogWarning("4");
+                        if (property.GetIndexParameters().Length == 0)
+                        {
+                            property.GetValue(objectToFix, null)?.FixReferences();
+                        }
+                        else
+                        {
+                            Log.LogError($"{property.Name}");
+                        }
+                        Log.LogWarning("4done");
                     }
                 }
             }
