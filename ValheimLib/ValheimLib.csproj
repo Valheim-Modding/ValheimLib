@@ -60,6 +60,7 @@
     <Compile Include="ODB\CustomItem.cs" />
     <Compile Include="Spawn\WeightedSpawnSystem.cs" />
     <Compile Include="Spawn\SpawnSystemHelper.cs" />
+    <Compile Include="Util\BoneReorder.cs" />
     <Compile Include="Util\Events\EventsHelper.cs" />
     <Compile Include="Util\Paths.cs" />
     <Compile Include="Util\Reflection\ReflectionHelper.cs" />
