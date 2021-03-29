@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using ValheimLib.Util.Events;
 
 namespace ValheimLib.ODB
@@ -74,6 +75,8 @@ namespace ValheimLib.ODB
                 var itemDrop = customItem.ItemDrop;
                 if (customItem.FixReference)
                 {
+                    customItem.ItemPrefab.FixReferences();
+
                     itemDrop.m_itemData.m_dropPrefab = customItem.ItemPrefab;
                     itemDrop.m_itemData.m_shared.FixReferences();
                     customItem.FixReference = false;
