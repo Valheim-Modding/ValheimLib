@@ -30,6 +30,10 @@ Documentation will be included in the  *xmldocs*, and further information may be
 
 ## Changelog
 
+**0.0.16**
+
+* Add `BoneReorder`, can be activated by doing `BoneReorder.ApplyOnEquipmentChanged()`. It'll correct any bone disorder caused by unity incorrectly importing ripped assets when doing custom equipments for example.
+
 **0.0.15**
 
 * AddToken was adding to French language by default instead of English, oops.
