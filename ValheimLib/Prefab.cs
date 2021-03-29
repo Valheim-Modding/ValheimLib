@@ -149,19 +149,39 @@ namespace ValheimLib
             return (T)GetRealPrefabFromMock(unityObject, typeof(T));
         }
 
-        // Thanks for not using the Resources folder IronGate
-        // There is probably some oddities in there
+        
         /// <summary>
         /// Will attempt to fix every field that are mocks gameObjects / Components from the given object.
         /// </summary>
         /// <param name="objectToFix"></param>
         public static void FixReferences(this object objectToFix)
         {
+            objectToFix.FixReferences(0);
+        }
+
+        // Thanks for not using the Resources folder IronGate
+        // There is probably some oddities in there
+        private static void FixReferences(this object objectToFix, int depth = 0)
+        {
+            // This is totally arbitrary.
+            // I had to add a depth because of call stack exploding otherwise
+            if (depth == 3)
+                return;
+
+            depth++;
+
             var type = objectToFix.GetType();
 
             const BindingFlags flags = ReflectionHelper.AllBindingFlags & ~BindingFlags.Static;
 
             var fields = type.GetFields(flags);
+            var baseType = type.BaseType;
+            while (baseType != null)
+            {
+                var parentFields = baseType.GetFields(flags);
+                fields = fields.Union(parentFields).ToArray();
+                baseType = baseType.BaseType;
+            }
             foreach (var field in fields)
             {
                 var fieldType = field.FieldType;
@@ -224,17 +244,24 @@ namespace ValheimLib
                         var currentValues = (IEnumerable<object>)field.GetValue(objectToFix);
                         foreach (var value in currentValues)
                         {
-                            value.FixReferences();
+                            value.FixReferences(depth);
                         }
                     }
                     else if (fieldType.IsClass)
                     {
-                        field.GetValue(objectToFix)?.FixReferences();
+                        field.GetValue(objectToFix)?.FixReferences(depth);
                     }
                 }
             }
 
-            var properties = type.GetProperties(flags);
+            var properties = type.GetProperties(flags).ToList();
+            baseType = type.BaseType;
+            if (baseType != null)
+            {
+                var parentProperties = baseType.GetProperties(flags).ToList();
+                foreach (var a in parentProperties)
+                    properties.Add(a);
+            }
             foreach (var property in properties)
             {
                 var propertyType = property.PropertyType;
@@ -242,7 +269,6 @@ namespace ValheimLib
                 var isUnityObject = propertyType.IsSameOrSubclass(typeof(UnityObject));
                 if (isUnityObject)
                 {
-                    Log.LogWarning("1");
                     var mock = (UnityObject)property.GetValue(objectToFix, null);
                     var realPrefab = GetRealPrefabFromMock(mock, propertyType);
                     if (realPrefab)
@@ -256,7 +282,6 @@ namespace ValheimLib
                     var isEnumerableOfUnityObjects = enumeratedType?.IsSameOrSubclass(typeof(UnityObject)) == true;
                     if (isEnumerableOfUnityObjects)
                     {
-                        Log.LogWarning("2");
                         var currentValues = (IEnumerable<UnityObject>)property.GetValue(objectToFix, null);
                         if (currentValues != null)
                         {
@@ -296,25 +321,18 @@ namespace ValheimLib
                     }
                     else if (enumeratedType?.IsClass == true)
                     {
-                        Log.LogWarning("3");
                         var currentValues = (IEnumerable<object>)property.GetValue(objectToFix, null);
                         foreach (var value in currentValues)
                         {
-                            value.FixReferences();
+                            value.FixReferences(depth);
                         }
                     }
                     else if (propertyType.IsClass)
                     {
-                        Log.LogWarning("4");
                         if (property.GetIndexParameters().Length == 0)
                         {
-                            property.GetValue(objectToFix, null)?.FixReferences();
+                            property.GetValue(objectToFix, null)?.FixReferences(depth);
                         }
-                        else
-                        {
-                            Log.LogError($"{property.Name}");
-                        }
-                        Log.LogWarning("4done");
                     }
                 }
             }
