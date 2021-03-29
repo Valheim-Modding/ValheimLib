@@ -131,6 +131,18 @@ namespace ValheimLib
                 if (isMock)
                 {
                     unityObjectName = unityObjectName.Substring(MockPrefix.Length);
+
+                    // Cut off the suffix in the name to correctly query the original material
+                    if (unityObject is Material)
+                    {
+                        const string materialInstance = " (Instance)";
+                        if (unityObjectName.EndsWith(materialInstance))
+                        {
+                            unityObjectName = unityObjectName.Substring(0, unityObjectName.Length - materialInstance.Length);
+                            Log.LogError(unityObjectName);
+                        }
+                    }
+
                     return Cache.GetPrefab(mockObjectType, unityObjectName);
                 }
             }
