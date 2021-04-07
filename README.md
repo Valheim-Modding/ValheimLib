@@ -1,4 +1,4 @@
-#Merging in progresss : checkout https://github.com/Valheim-Modding/Jotunn
+# Merging in progresss : checkout https://github.com/Valheim-Modding/Jotunn
 
 # ValheimLib - A library to facilitate valheim modding
 
